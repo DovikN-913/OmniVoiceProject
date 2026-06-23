@@ -18,10 +18,10 @@ Instead of exposing only a model demo, this repository packages the model as a r
 ## Documentation
 
 - [Quick Start](#quick-start): get local inference and the API server running
-- [Installation Guide](./docs/install.md): environment setup, PyTorch installation, and troubleshooting
-- [TTS API Guide](./docs/TTS%20API.md): HTTP and WebSocket request/response details
-- [Docker Deployment Guide](./docs/docker.md): GPU container deployment and operations
-- [Chinese README](./README.md): Chinese project documentation
+- [Installation Guide](./install.md): environment setup, PyTorch installation, and troubleshooting
+- [TTS API Guide](./TTS%20API.md): HTTP and WebSocket request/response details
+- [Docker Deployment Guide](./docker.md): GPU container deployment and operations
+- [Chinese README](../README.md): Chinese project documentation
 
 ## What It Is For
 
@@ -43,6 +43,10 @@ OmniVoiceProject/
 │   └── main.py                  # FastAPI application entry
 ├── asset/                       # Preset reference audio files
 ├── docs/                        # Project documentation
+│   ├── README-EN.md             # English project documentation
+│   ├── TTS API.md               # API reference
+│   ├── docker.md                # Docker deployment guide
+│   └── install.md               # Installation guide
 ├── scripts/
 │   ├── download_model.py        # Download OmniVoice model weights
 │   ├── infer.py                 # Local one-shot inference example
@@ -52,8 +56,7 @@ OmniVoiceProject/
 ├── server.py                    # API server launcher
 ├── requirements.txt             # Python dependencies
 ├── .env.example                 # Environment variable template
-├── README.md
-└── README-EN.md
+└── README.md
 ```
 
 ## Requirements
@@ -86,7 +89,7 @@ source .venv/bin/activate
 
 ### 3. Install PyTorch
 
-Install the PyTorch build that matches your CUDA version. `CUDA 12.8` is the recommended baseline for this project. See [docs/install.md](./docs/install.md) for a fuller setup guide.
+Install the PyTorch build that matches your CUDA version. `CUDA 12.8` is the recommended baseline for this project. See [install.md](./install.md) for a fuller setup guide.
 
 ```bash
 pip install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 --index-url https://download.pytorch.org/whl/cu128
@@ -158,7 +161,7 @@ curl -X POST "http://localhost:8000/api/v1/tts/synthesize" \
   }'
 ```
 
-See [docs/TTS API.md](./docs/TTS%20API.md) for the full API surface.
+See [TTS API.md](./TTS%20API.md) for the full API surface.
 
 ## Preset Voices
 
@@ -208,7 +211,7 @@ Copy-Item .env.example .env
 docker compose up -d --build
 ```
 
-See [docs/docker.md](./docs/docker.md) for deployment and operations details.
+See [docker.md](./docker.md) for deployment and operations details.
 
 ## Notes For Developers
 

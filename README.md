@@ -1,6 +1,6 @@
 # OmniVoiceProject
 
-**[English](./README.en.md)** | 简体中文
+**[English](./docs/README-EN.md)** | 简体中文
 
 `OmniVoiceProject` 是一个围绕 [OmniVoice](https://github.com/k2-fsa/OmniVoice) 封装的多语言零样本文本转语音项目，目标不是只演示模型推理，而是把模型整理成一套真正可运行、可集成、可部署的工程化 TTS 服务。
 
@@ -21,7 +21,7 @@
 - [安装指南](./docs/install.md)：环境准备、PyTorch 安装和依赖排查
 - [TTS API 文档](./docs/TTS%20API.md)：HTTP / WebSocket 接口说明与示例
 - [Docker 部署指南](./docs/docker.md)：GPU 容器部署、运维命令与常见问题
-- [English README](./README.en.md)：英文说明文档
+- [English README](./docs/README-EN.md)：英文说明文档
 
 ## 适用场景
 
@@ -43,6 +43,10 @@ OmniVoiceProject/
 │   └── main.py                  # FastAPI 应用入口
 ├── asset/                       # 预设音色参考音频
 ├── docs/                        # 项目文档
+│   ├── README-EN.md            # 英文项目说明
+│   ├── TTS API.md              # API 接口规范
+│   ├── docker.md               # Docker 部署指南
+│   └── install.md              # 安装指南
 ├── scripts/
 │   ├── download_model.py        # 下载 OmniVoice 模型权重
 │   ├── infer.py                 # 本地单次推理示例
@@ -52,8 +56,7 @@ OmniVoiceProject/
 ├── server.py                    # API 服务启动脚本
 ├── requirements.txt             # Python 依赖
 ├── .env.example                 # 环境变量示例
-├── README.md
-└── README.en.md
+└── README.md
 ```
 
 ## 环境要求
