@@ -28,8 +28,9 @@ RUN pip install \
     --index-url https://download.pytorch.org/whl/cu128
 
 # 项目依赖
-COPY requirements.txt requirements/
-COPY requirements/base.txt requirements/api.txt requirements/
+COPY requirements.txt .
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn
 RUN pip install -r requirements.txt
 
 # 应用代码

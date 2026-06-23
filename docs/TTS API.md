@@ -32,7 +32,7 @@
 | 本地开发 | `http://localhost:8000`          |
 
 所有 HTTP 接口前缀：`/api/v1/tts`  
-流式接口地址：`wss://{host}/api/v1/tts/stream`
+流式接口地址：`ws://{host}/api/v1/tts/stream`
 
 ### 1.3 音频输出规范
 
@@ -292,7 +292,7 @@ POST /api/v1/tts/synthesize
     "audio_format": "wav",
     "sample_rate": 24000,
     "audio_duration": 3.2,
-    "audio_pinyin": "ni hao，zhe shi wo de sheng yin。"
+    "audio_pinyin": "nǐ hǎo ， zhè shì wǒ de shēng yīn 。"
   }
 }
 ```
@@ -319,7 +319,7 @@ X-Request-Id: req_20260615143001_a1b2c3
 | audio_format   | string | 音频编码格式          |
 | sample_rate    | int    | 采样率（Hz）         |
 | audio_duration | float  | 音频时长（秒）         |
-| audio_pinyin   | string | 拼音结果（`enable_pinyin=true` 时返回） |
+| audio_pinyin   | string | 拼音结果（`enable_pinyin=true` 时返回；是否带音调由环境变量 `TTS_PINYIN_WITH_TONE` 控制） |
 
 ### 4.6 错误响应示例
 
@@ -348,7 +348,7 @@ X-Request-Id: req_20260615143001_a1b2c3
 ### 5.1 连接地址
 
 ```text
-wss://{host}/api/v1/tts/stream
+ws://{host}/api/v1/tts/stream
 ```
 
 ### 5.2 连接与鉴权
@@ -382,6 +382,8 @@ wss://{host}/api/v1/tts/stream
   }
 }
 ```
+
+> 兼容说明：也支持直接发送 `payload`（即不带外层 `action/payload` 包装），服务端会按 `action=synthesize` 处理。
 
 | 字段                    | 类型     | 必填 | 说明                          |
 | --------------------- | ------ | -- | --------------------------- |
@@ -440,7 +442,7 @@ wss://{host}/api/v1/tts/stream
   "audio_format": "wav",
   "sample_rate": 24000,
   "audio_duration": 1.8,
-  "audio_pinyin": "ni hao zhe shi wo de sheng yin"
+  "audio_pinyin": "nǐ hǎo ， zhè shì wǒ de shēng yīn 。"
 }
 ```
 
@@ -455,7 +457,7 @@ wss://{host}/api/v1/tts/stream
 | audio_format   | string | 音频格式            |
 | sample_rate    | int    | 采样率             |
 | audio_duration | float  | 当前分段时长（秒）       |
-| audio_pinyin   | string | 拼音（`enable_pinyin=true` 时） |
+| audio_pinyin   | string | 拼音（`enable_pinyin=true` 时；是否带音调由环境变量 `TTS_PINYIN_WITH_TONE` 控制） |
 
 > **性能优化（可选扩展）**：高吞吐场景可增加 `audio_transport=binary` 模式，音频走 Binary Frame，JSON 帧仅携带元数据。默认保持 Base64 以降低接入复杂度。
 

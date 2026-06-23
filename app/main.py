@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    """FastAPI 生命周期钩子：启动时预加载 TTS 模型。"""
     try:
         await engine.load()
     except Exception:
@@ -38,6 +39,15 @@ app.include_router(router)
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """将请求校验错误转换为统一的 API envelope 响应。
+
+    Args:
+        request: 当前请求对象。
+        exc: FastAPI/Pydantic 抛出的校验错误。
+
+    Returns:
+        JSONResponse（包含业务 envelope）。部分错误会返回 HTTP 200，以保持与其他业务错误响应风格一致。
+    """
     request_id = get_request_id(request.headers.get("X-Request-Id"))
     message = "invalid request"
     for err in exc.errors():
@@ -55,6 +65,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 @app.get("/")
 async def root():
+    """根路径：返回服务元信息。"""
     return {
         "service": "OmniVoice TTS API",
         "version": API_VERSION,

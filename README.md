@@ -39,9 +39,6 @@ OmniVoiceProject/
 │   ├── TTS API.md              # API 接口规范
 │   ├── docker.md               # Docker 部署指南
 │   └── install.md              # PyTorch 安装说明
-├── requirements/               # 依赖分组
-│   ├── base.txt                # 推理依赖
-│   └── api.txt                 # API 服务依赖
 ├── asset/                      # 参考音频
 ├── models/                     # 模型权重（gitignore）
 ├── output/                     # 生成音频（gitignore）
@@ -87,10 +84,6 @@ pip install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 --index-url https
 ### 4. 安装项目依赖
 
 ```bash
-# 仅推理
-pip install -r requirements/base.txt
-
-# 推理 + API 服务（完整）
 pip install -r requirements.txt
 ```
 

@@ -39,6 +39,14 @@ class SynthesizeRequest(BaseModel):
 
     @model_validator(mode="after")
     def resolve_voice_id(self) -> "SynthesizeRequest":
+        """兼容旧字段 voice，并将其归一到 voice_id。
+
+        Returns:
+            校验后的模型实例（确保 voice_id 已被填充）。
+
+        Raises:
+            ValueError: voice_id 与 voice 均未提供时抛出。
+        """
         if not self.voice_id and not self.voice:
             raise ValueError("voice_id is required")
         if not self.voice_id:
@@ -48,6 +56,7 @@ class SynthesizeRequest(BaseModel):
     @field_validator("text")
     @classmethod
     def text_not_blank(cls, value: str) -> str:
+        """确保 text 去除空白后不为空。"""
         if not value or not value.strip():
             raise ValueError("text is empty")
         return value
@@ -73,6 +82,14 @@ class StreamPayload(BaseModel):
 
     @model_validator(mode="after")
     def resolve_voice_id(self) -> "StreamPayload":
+        """兼容旧字段 voice，并将其归一到 voice_id。
+
+        Returns:
+            校验后的模型实例（确保 voice_id 已被填充）。
+
+        Raises:
+            ValueError: voice_id 与 voice 均未提供时抛出。
+        """
         if not self.voice_id and not self.voice:
             raise ValueError("voice_id is required")
         if not self.voice_id:
@@ -82,6 +99,7 @@ class StreamPayload(BaseModel):
     @field_validator("text")
     @classmethod
     def text_not_blank(cls, value: str) -> str:
+        """确保 text 去除空白后不为空。"""
         if not value or not value.strip():
             raise ValueError("text is empty")
         return value

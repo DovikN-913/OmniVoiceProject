@@ -10,6 +10,18 @@ def validate_synthesis_params(
     volume: float,
     max_len: int,
 ) -> ErrorCode | None:
+    """校验合成参数，并在失败时映射为 ErrorCode。
+
+    Args:
+        text: 待合成文本。
+        voice_id: 音色 ID。
+        speed: 语速倍率。
+        volume: 音量倍率。
+        max_len: 文本最大允许长度（字符数）。
+
+    Returns:
+        校验失败返回对应 ErrorCode；通过则返回 None。
+    """
     if not text or not text.strip():
         return ErrorCode.TEXT_EMPTY
     if len(text) > max_len:

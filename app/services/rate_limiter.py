@@ -16,10 +16,24 @@ class RateLimitResult:
 
 class RateLimiter:
     def __init__(self) -> None:
+        """创建一个内存内限流器。
+
+        规则：
+        - QPS：按 API key 维度的 1 秒滑动窗口
+        - Daily：按 API key 维度的每日计数
+        """
         self._windows: dict[str, deque[float]] = defaultdict(deque)
         self._daily: dict[str, tuple[str, int]] = {}
 
     def check(self, api_key: str) -> RateLimitResult:
+        """检查并消耗一次 API key 的限流额度。
+
+        Args:
+            api_key: 用于标识调用方的 API key。
+
+        Returns:
+            RateLimitResult，包含是否允许以及用于响应头的限流元数据。
+        """
         now = time.time()
         window = self._windows[api_key]
         while window and now - window[0] >= 1.0:

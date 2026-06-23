@@ -20,6 +20,25 @@ API_HOST = os.getenv("TTS_API_HOST", "0.0.0.0")
 API_PORT = int(os.getenv("TTS_API_PORT", "8000"))
 API_VERSION = "1.0.0"
 
+def _get_bool_env(name: str, default: bool) -> bool:
+    """解析布尔类型的环境变量。
+
+    Args:
+        name: 环境变量名。
+        default: 未设置该环境变量时的默认值。
+
+    Returns:
+        解析后的布尔值。以下取值会被视为 True（不区分大小写）：
+        1 / true / yes / y / on
+    """
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
+PINYIN_WITH_TONE = _get_bool_env("TTS_PINYIN_WITH_TONE", True)
+
 _DEFAULT_API_KEYS = "dev-tts-api-key-change-me"
 API_KEYS = {
     k.strip()
@@ -34,11 +53,20 @@ IDEMPOTENCY_TTL_SECONDS = int(os.getenv("TTS_IDEMPOTENCY_TTL", str(24 * 3600)))
 
 HTTP_TEXT_MAX_LEN = 5000
 WS_TEXT_MAX_LEN = 20000
-SEGMENT_MAX_LEN = 500
-SEGMENT_FORCE_WINDOW = 200
+SEGMENT_MAX_LEN = 100
+SEGMENT_FORCE_WINDOW = 20
 
 
 def _voice(wav_file: str, **meta: str) -> dict:
+    """构造一个音色配置条目。
+
+    Args:
+        wav_file: 位于 ASSET_DIR 下的参考音频文件名。
+        **meta: 需要写入配置的其他元信息字段。
+
+    Returns:
+        包含元信息与 prompt_wav 绝对路径字符串的 dict。
+    """
     return {
         **meta,
         "prompt_wav": str(ASSET_DIR / wav_file),

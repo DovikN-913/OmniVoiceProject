@@ -1,8 +1,0 @@
-# API 服务依赖
-fastapi>=0.115.0
-uvicorn[standard]>=0.32.0
-pydantic>=2.0.0
-pypinyin>=0.53.0
-websockets>=12.0
-# mp3 输出可选（需系统安装 ffmpeg）
-pydub>=0.25.1

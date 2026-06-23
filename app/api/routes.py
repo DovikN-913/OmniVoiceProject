@@ -50,12 +50,28 @@ def _business_response(
     data=None,
     message: str | None = None,
 ) -> JSONResponse:
+    """统一返回 HTTP 200 的业务响应（带 envelope）。
+
+    Args:
+        code: 写入 envelope 的业务码。
+        request_id: 请求 ID（用于追踪）。
+        data: envelope 中的数据体。
+        message: 可选自定义消息。
+
+    Returns:
+        包含标准 envelope 的 JSONResponse。
+    """
     body = build_envelope(code, request_id, data=data, message=message)
     return JSONResponse(status_code=200, content=body.model_dump())
 
 
 @router.get("/health")
 async def health():
+    """健康检查接口。
+
+    Returns:
+        返回模型加载状态与 GPU 可用性等信息。
+    """
     model_loaded = engine.is_loaded
     gpu_ok = engine.gpu_available()
     status = "ok" if model_loaded else "degraded"
@@ -80,6 +96,7 @@ async def get_voices(
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
 ):
+    """查询音色列表（支持语言过滤与分页）。"""
     check_rate_limit(api_key, request_id)
 
     voices = list_voices(language=language)
@@ -102,6 +119,17 @@ async def synthesize(
     request_id: str = Depends(resolve_request_id),
     idempotency_key: str | None = Depends(optional_idempotency_key),
 ):
+    """HTTP 非流式合成接口。
+
+    Args:
+        body: 合成请求体。
+        api_key: 已校验的 API key。
+        request_id: 请求 ID（用于追踪）。
+        idempotency_key: 可选幂等键，用于复用响应。
+
+    Returns:
+        根据 response_mode 返回 JSON envelope 或音频二进制。
+    """
     check_rate_limit(api_key, request_id)
 
     if idempotency_key:
@@ -184,6 +212,11 @@ async def synthesize(
 
 @router.websocket("/stream")
 async def stream_tts(websocket: WebSocket):
+    """WebSocket 流式合成接口。
+
+    服务端默认接收 StreamClientMessage 格式消息；为兼容简化调用，也支持仅发送 payload 的 JSON，
+    会被视作 action=synthesize 处理。
+    """
     token = extract_bearer_token(websocket.headers.get("authorization"))
     if not token:
         token = websocket.query_params.get("api_key")
@@ -205,6 +238,7 @@ async def stream_tts(websocket: WebSocket):
     heartbeat_stop = asyncio.Event()
 
     async def heartbeat_loop():
+        """周期性发送心跳消息，避免连接在空闲时被中间层关闭。"""
         while not heartbeat_stop.is_set():
             await asyncio.sleep(30)
             if heartbeat_stop.is_set():
@@ -220,7 +254,18 @@ async def stream_tts(websocket: WebSocket):
         while True:
             raw = await websocket.receive_text()
             try:
-                message = StreamClientMessage.model_validate(json.loads(raw))
+                data = json.loads(raw)
+                try:
+                    message = StreamClientMessage.model_validate(data)
+                except ValidationError:
+                    if isinstance(data, dict) and "action" not in data:
+                        if "payload" in data and isinstance(data["payload"], dict):
+                            legacy = {"action": "synthesize", **data}
+                        else:
+                            legacy = {"action": "synthesize", "payload": data}
+                        message = StreamClientMessage.model_validate(legacy)
+                    else:
+                        raise
             except (json.JSONDecodeError, ValidationError) as exc:
                 await websocket.send_json(
                     {

@@ -39,9 +39,6 @@ OmniVoiceProject/
 │   ├── TTS API.md              # API specification
 │   ├── docker.md               # Docker deployment guide
 │   └── install.md              # PyTorch installation
-├── requirements/               # Dependency groups
-│   ├── base.txt                # Inference dependencies
-│   └── api.txt                 # API service dependencies
 ├── asset/                      # Reference audio files
 ├── models/                     # Model weights (gitignored)
 ├── output/                     # Generated audio (gitignored)
@@ -87,10 +84,6 @@ pip install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 --index-url https
 ### 4. Install project dependencies
 
 ```bash
-# Inference only
-pip install -r requirements/base.txt
-
-# Inference + API service (full)
 pip install -r requirements.txt
 ```
 

@@ -1,5 +1,0 @@
-# 推理核心依赖
-omnivoice
-soundfile
-modelscope
-numpy>=1.24.0
