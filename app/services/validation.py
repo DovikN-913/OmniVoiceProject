@@ -1,6 +1,5 @@
 from app.core.errors import ErrorCode
 from app.services.voice_registry import resolve_voice
-from app.core.config import HTTP_TEXT_MAX_LEN, WS_TEXT_MAX_LEN
 
 
 def validate_synthesis_params(

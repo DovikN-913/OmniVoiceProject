@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import Depends, Header, HTTPException
+from fastapi import Header, HTTPException
 
 from app.core.config import API_KEYS
 from app.core.errors import ERROR_MESSAGES, ErrorCode

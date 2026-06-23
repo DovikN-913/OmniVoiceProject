@@ -14,7 +14,6 @@ from omnivoice import OmniVoice
 
 from app.core.config import DEVICE_MAP, MODEL_PATH, OUTPUT_DIR, SAMPLE_RATE, VOICE_CONFIG
 
-
 def main() -> None:
     """执行一次本地推理并保存输出 wav 文件。"""
     os.makedirs(OUTPUT_DIR, exist_ok=True)
