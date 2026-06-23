@@ -1,0 +1,34 @@
+services:
+  tts-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: omnivoice-tts-api:latest
+    container_name: omnivoice-tts-api
+    restart: unless-stopped
+    ports:
+      - "${TTS_API_PORT:-8000}:8000"
+    env_file:
+      - .env
+    environment:
+      TTS_API_HOST: "0.0.0.0"
+      TTS_API_PORT: "8000"
+      TTS_DEVICE: "${TTS_DEVICE:-cuda:0}"
+      TTS_MODEL_PATH: "${TTS_MODEL_PATH:-/app/models/k2-fsa/OmniVoice}"
+      TTS_API_KEYS: "${TTS_API_KEYS:-dev-tts-api-key-change-me}"
+      TTS_RATE_LIMIT_QPS: "${TTS_RATE_LIMIT_QPS:-10}"
+      TTS_RATE_LIMIT_DAILY: "${TTS_RATE_LIMIT_DAILY:-100000}"
+      TTS_WS_MAX_CONNECTIONS: "${TTS_WS_MAX_CONNECTIONS:-5}"
+      NVIDIA_VISIBLE_DEVICES: "${NVIDIA_VISIBLE_DEVICES:-all}"
+    volumes:
+      # 模型权重（宿主机下载后挂载，避免打入镜像）
+      - ./models:/app/models
+      # 可选：持久化合成输出
+      - ./output:/app/output
+    gpus: all
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://127.0.0.1:8000/api/v1/tts/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 180s
